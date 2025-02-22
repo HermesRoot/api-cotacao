@@ -15,7 +15,7 @@
     <script>
         async function buscarCotacoes() {
             try {
-                const resposta = await fetch("http://127.0.0.1:5000/cotacao");
+                const resposta = await fetch("https://api-cotacao-ufuq.onrender.com/cotacao");
                 const dados = await resposta.json();
                 
                 const cotacoesDiv = document.getElementById("cotacoes");
