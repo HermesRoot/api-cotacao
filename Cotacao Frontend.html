@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cotação Atual</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+    <div class="bg-white shadow-lg rounded-lg p-6 w-96 text-center">
+        <h1 class="text-xl font-bold mb-4">Cotação Atual</h1>
+        <div id="cotacoes" class="space-y-4 text-lg"></div>
+    </div>
+    
+    <script>
+        async function buscarCotacoes() {
+            try {
+                const resposta = await fetch("http://127.0.0.1:5000/cotacao");
+                const dados = await resposta.json();
+                
+                const cotacoesDiv = document.getElementById("cotacoes");
+                cotacoesDiv.innerHTML = ""; // Limpa antes de atualizar
+                
+                Object.keys(dados).forEach(moeda => {
+                    const { cotacao, variacao, data } = dados[moeda];
+                    const cor = variacao >= 0 ? 'text-green-600' : 'text-red-600';
+                    
+                    cotacoesDiv.innerHTML += `
+                        <div class="p-2 bg-gray-200 rounded">
+                            <p class="font-semibold">${moeda}-BRL</p>
+                            <p class="text-xl font-bold">R$ ${cotacao.toFixed(2)}</p>
+                            <p class="${cor}">Variação: ${variacao.toFixed(2)}%</p>
+                            <p class="text-xs text-gray-500">Atualizado em: ${data}</p>
+                        </div>
+                    `;
+                });
+            } catch (erro) {
+                console.error("Erro ao buscar cotações:", erro);
+                document.getElementById("cotacoes").innerHTML = "<p class='text-red-600'>Erro ao carregar cotações.</p>";
+            }
+        }
+        
+        buscarCotacoes(); // Chamada inicial
+        setInterval(buscarCotacoes, 300000); // Atualiza a cada 5 minutos
+    </script>
+</body>
+</html>

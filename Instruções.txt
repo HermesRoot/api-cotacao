@@ -1,0 +1,13 @@
+Instruções
+
+1. Navegue até a pasta raiz do arquivo:
+   Abra o terminal ou prompt de comando e execute:
+   cd C:\Users\Hermeson Lima\Desktop
+
+2. Execute o arquivo Python:
+   Após navegar até a pasta, execute:
+   python cotacao_api.py
+
+3. Verifique se a API está online:
+   Acesse no navegador:
+   http://127.0.0.1:5000/cotacao
