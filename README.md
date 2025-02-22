@@ -1,7 +1,3 @@
-# api-cotacao
-API de cotação de moedas (USD, EUR, BTC) atualizada a cada 5 minutos.
-
-Aqui está um README básico para sua API de cotações:  
 
 ---
 
@@ -26,7 +22,7 @@ Retorna as cotações das moedas armazenadas.
 
 1. Clone este repositório:  
    ```sh
-   git clone https://github.com/seu-usuario/seu-repo.git
+   git clone https://github.com/HermesRoot/api-cotacao.git
    cd seu-repo
    ```
 
