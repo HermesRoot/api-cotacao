@@ -10,15 +10,13 @@ CORS(app, resources={r"/cotacao": {"origins": "*"}})
 
 CACHE_FILE = "cotacoes.json"
 UPDATE_INTERVAL = 300  # 5 minutos
-API_URL = "https://economia.awesomeapi.com.br/json/last/USD-BRL,EUR-BRL,BTC-BRL"
+API_URL = "https://economia.awesomeapi.com.br/json/last/USD-BRL,EUR-BRL,BTC-BRL,GBP-BRL,JPY-BRL,CNY-BRL"
 
 def atualizar_cotacoes():
     """Obtém as cotações da AwesomeAPI e salva em um arquivo JSON periodicamente."""
     while True:
         try:
             resposta = requests.get(API_URL)
-            print("Resposta da API:", resposta.text)  # Debug para verificar a resposta
-
             if resposta.status_code == 200:
                 dados = resposta.json()
                 cotacoes = {
@@ -36,6 +34,21 @@ def atualizar_cotacoes():
                         "cotacao": float(dados["BTCBRL"]["bid"]),
                         "variacao": float(dados["BTCBRL"]["pctChange"]),
                         "data": dados["BTCBRL"]["create_date"]
+                    },
+                    "GBP": {
+                        "cotacao": float(dados["GBPBRL"]["bid"]),
+                        "variacao": float(dados["GBPBRL"]["pctChange"]),
+                        "data": dados["GBPBRL"]["create_date"]
+                    },
+                    "JPY": {
+                        "cotacao": float(dados["JPYBRL"]["bid"]),
+                        "variacao": float(dados["JPYBRL"]["pctChange"]),
+                        "data": dados["JPYBRL"]["create_date"]
+                    },
+                    "CNY": {
+                        "cotacao": float(dados["CNYBRL"]["bid"]),
+                        "variacao": float(dados["CNYBRL"]["pctChange"]),
+                        "data": dados["CNYBRL"]["create_date"]
                     }
                 }
                 with open(CACHE_FILE, "w") as arquivo:
