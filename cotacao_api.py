@@ -11,15 +11,14 @@ CORS(app, resources={r"/cotacao": {"origins": "*"}})
 CACHE_FILE = "cotacoes.json"
 UPDATE_INTERVAL = 300  # 5 minutos
 API_URL = "https://economia.awesomeapi.com.br/json/last/USD-BRL,EUR-BRL,BTC-BRL"
-API_KEY = "9e294d7b6bdbaf42806b23280c254da7f5c7ed68bafe2238778ddd67d144100e"  # Substitua pela sua chave de API
 
 def atualizar_cotacoes():
     """Obtém as cotações da AwesomeAPI e salva em um arquivo JSON periodicamente."""
     while True:
         try:
-            headers = {"x-api-key": API_KEY}  # Adiciona a chave da API no cabeçalho
-            resposta = requests.get(API_URL, headers=headers)
-            
+            resposta = requests.get(API_URL)
+            print("Resposta da API:", resposta.text)  # Debug para verificar a resposta
+
             if resposta.status_code == 200:
                 dados = resposta.json()
                 cotacoes = {
