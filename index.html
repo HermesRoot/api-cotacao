@@ -21,18 +21,30 @@
                 const cotacoesDiv = document.getElementById("cotacoes");
                 cotacoesDiv.innerHTML = ""; // Limpa antes de atualizar
                 
-                Object.keys(dados).forEach(moeda => {
-                    const { cotacao, variacao, data } = dados[moeda];
-                    const cor = variacao >= 0 ? 'text-green-600' : 'text-red-600';
-                    
-                    cotacoesDiv.innerHTML += `
-                        <div class="p-2 bg-gray-200 rounded">
-                            <p class="font-semibold">${moeda}-BRL</p>
-                            <p class="text-xl font-bold">R$ ${cotacao.toFixed(2)}</p>
-                            <p class="${cor}">Variação: ${variacao.toFixed(2)}%</p>
-                            <p class="text-xs text-gray-500">Atualizado em: ${data}</p>
-                        </div>
-                    `;
+                const ordemMoedas = ["USD", "EUR", "BTC", "GBP", "JPY", "CNY"];
+                const nomesMoedas = {
+                    "USD": "Dólar Americano (USD)",
+                    "EUR": "Euro (EUR)",
+                    "BTC": "Bitcoin (BTC)",
+                    "GBP": "Libra Esterlina (GBP)",
+                    "JPY": "Iene Japonês (JPY)",
+                    "CNY": "Yuan Chinês (CNY)"
+                };
+                
+                ordemMoedas.forEach(moeda => {
+                    if (dados[moeda]) {
+                        const { cotacao, variacao, data } = dados[moeda];
+                        const cor = variacao >= 0 ? 'text-green-600' : 'text-red-600';
+
+                        cotacoesDiv.innerHTML += `
+                            <div class="p-2 bg-gray-200 rounded">
+                                <p class="font-semibold">${nomesMoedas[moeda]}</p>
+                                <p class="text-xl font-bold">R$ ${cotacao.toFixed(2)}</p>
+                                <p class="${cor}">Variação: ${variacao.toFixed(2)}%</p>
+                                <p class="text-xs text-gray-500">Atualizado em: ${data}</p>
+                            </div>
+                        `;
+                    }
                 });
             } catch (erro) {
                 console.error("Erro ao buscar cotações:", erro);
