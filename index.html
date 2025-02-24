@@ -3,24 +3,80 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cotação Atual</title>
+    <title>Cotação Moedas</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        select option {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 5px;
+        }
+        .bandeira {
+            width: 20px;
+            height: 15px;
+            vertical-align: middle;
+            margin-left: 10px;
+        }
+        /* Efeito de hover nos cards de cotação */
+        .cotacao-card {
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .cotacao-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+        }
+    </style>
 </head>
-<body class="bg-gray-100 flex items-center justify-center min-h-screen">
-    <div class="bg-white shadow-lg rounded-lg p-6 w-96 text-center">
-        <h1 class="text-xl font-bold mb-4">Cotação Moedas</h1>
-        <div id="cotacoes" class="space-y-4 text-lg"></div>
+<body class="bg-gradient-to-br from-gray-50 to-gray-200 flex items-center justify-center min-h-screen font-sans">
+    <div class="bg-white shadow-xl rounded-xl p-8 w-full max-w-md text-center">
+        <h1 class="text-2xl font-semibold text-gray-800 mb-6">Cotação de Moedas</h1>
+        <div id="cotacoes" class="space-y-4"></div>
     </div>
-    
+
+    <!-- Modal de Conversão -->
+    <div id="modal" class="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center hidden" onclick="fecharModal(event)">
+        <div class="bg-white p-8 rounded-xl shadow-2xl w-full max-w-sm relative transform transition-all duration-300 scale-95" onclick="event.stopPropagation()">
+            <button class="absolute top-3 right-3 text-gray-500 hover:text-gray-700 text-xl" onclick="fecharModal(event)">✖</button>
+            <h2 class="text-xl font-semibold text-gray-800 mb-6">Conversor de Moedas</h2>
+            <label class="block mb-2 text-sm font-medium text-gray-700">Valor</label>
+            <input type="number" id="valorEntrada" class="w-full border border-gray-300 rounded-lg p-3 mb-6 text-gray-800 focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="Digite um valor">
+            
+            <div class="flex justify-between items-center mb-6 gap-3">
+                <select id="moedaOrigem" class="border border-gray-300 rounded-lg p-3 w-1/2 text-gray-800 focus:ring-2 focus:ring-blue-500 focus:border-blue-500" onchange="atualizarSelectDestino()"></select>
+                <button id="trocarMoedas" class="px-4 py-2 bg-gray-200 text-gray-600 rounded-lg hover:bg-gray-300 transition-colors" onclick="trocarMoedas()">⇄</button>
+                <select id="moedaDestino" class="border border-gray-300 rounded-lg p-3 w-1/2 text-gray-800 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"></select>
+            </div>
+            
+            <p id="resultadoConversao" class="text-lg font-semibold text-gray-800 mb-6">Resultado: -</p>
+            <button id="converter" class="bg-blue-600 text-white px-6 py-3 rounded-lg w-full hover:bg-blue-700 transition-colors">Converter</button>
+        </div>
+    </div>
+
     <script>
+        let cotacoesGlobais = {};
+
+        const bandeiras = {
+            "USD": "https://flagcdn.com/w20/us.png",
+            "EUR": "https://flagcdn.com/w20/eu.png",
+            "BTC": "https://flagcdn.com/w20/bt.png",
+            "GBP": "https://flagcdn.com/w20/gb.png",
+            "JPY": "https://flagcdn.com/w20/jp.png",
+            "CNY": "https://flagcdn.com/w20/cn.png",
+            "ARS": "https://flagcdn.com/w20/ar.png",
+            "CAD": "https://flagcdn.com/w20/ca.png",
+            "BRL": "https://flagcdn.com/w20/br.png"
+        };
+
         async function buscarCotacoes() {
             try {
                 const resposta = await fetch("https://api-cotacao-ufuq.onrender.com/cotacao");
                 const dados = await resposta.json();
-                
+                cotacoesGlobais = dados;
+
                 const cotacoesDiv = document.getElementById("cotacoes");
-                cotacoesDiv.innerHTML = ""; // Limpa antes de atualizar
-                
+                cotacoesDiv.innerHTML = "";
+
                 const ordemMoedas = ["USD", "EUR", "BTC", "GBP", "JPY", "CNY", "ARS", "CAD"];
                 const nomesMoedas = {
                     "USD": "Dólar Americano (USD)",
@@ -32,20 +88,22 @@
                     "ARS": "Peso Argentino (ARS)",
                     "CAD": "Dólar Canadense (CAD)"
                 };
-                
+
                 ordemMoedas.forEach(moeda => {
                     if (dados[moeda]) {
                         const { cotacao, variacao, data } = dados[moeda];
                         const cor = variacao >= 0 ? 'text-green-600' : 'text-red-600';
 
-                        cotacoesDiv.innerHTML += `
-                            <div class="p-2 bg-gray-200 rounded">
-                                <p class="font-semibold">${nomesMoedas[moeda]}</p>
-                                <p class="text-xl font-bold">R$ ${cotacao.toFixed(2)}</p>
-                                <p class="${cor}">Variação: ${variacao.toFixed(2)}%</p>
-                                <p class="text-xs text-gray-500">Atualizado em: ${data}</p>
-                            </div>
+                        const moedaDiv = document.createElement("div");
+                        moedaDiv.classList.add("cotacao-card", "p-4", "bg-gray-100", "rounded-lg", "cursor-pointer", "hover:bg-gray-50");
+                        moedaDiv.innerHTML = `
+                            <p class="font-medium text-gray-700">${nomesMoedas[moeda]} <img src="${bandeiras[moeda]}" class="bandeira inline" alt="${moeda} flag"></p>
+                            <p class="text-xl font-bold text-gray-800">R$ ${cotacao.toFixed(2)}</p>
+                            <p class="${cor} text-sm">Variação: ${variacao.toFixed(2)}%</p>
+                            <p class="text-xs text-gray-500">Atualizado em: ${data}</p>
                         `;
+                        moedaDiv.onclick = () => abrirModal(moeda, cotacao);
+                        cotacoesDiv.appendChild(moedaDiv);
                     }
                 });
             } catch (erro) {
@@ -53,9 +111,91 @@
                 document.getElementById("cotacoes").innerHTML = "<p class='text-red-600'>Erro ao carregar cotações.</p>";
             }
         }
-        
-        buscarCotacoes(); // Chamada inicial
-        setInterval(buscarCotacoes, 300000); // Atualiza a cada 5 minutos
+
+        function abrirModal(moeda, cotacao) {
+            document.getElementById("modal").classList.remove("hidden");
+            document.getElementById("modal").querySelector("div").classList.remove("scale-95");
+            document.getElementById("modal").querySelector("div").classList.add("scale-100");
+            document.getElementById("valorEntrada").value = "";
+            document.getElementById("resultadoConversao").textContent = "Resultado: -";
+            popularSelects(moeda);
+        }
+
+        function fecharModal(event) {
+            document.getElementById("modal").classList.add("hidden");
+        }
+
+        function popularSelects(moedaInicial) {
+            const moedas = Object.keys(cotacoesGlobais).concat("BRL");
+            const selectOrigem = document.getElementById("moedaOrigem");
+            const selectDestino = document.getElementById("moedaDestino");
+            selectOrigem.innerHTML = "";
+            selectDestino.innerHTML = "";
+
+            moedas.forEach(moeda => {
+                const optionText = `${moeda} <img src="${bandeiras[moeda]}" class="bandeira" alt="${moeda} flag">`;
+                let option = document.createElement("option");
+                option.value = moeda;
+                option.innerHTML = optionText;
+                selectOrigem.add(option.cloneNode(true));
+                selectDestino.add(option.cloneNode(true));
+            });
+
+            selectOrigem.value = moedaInicial;
+            selectDestino.value = moedaInicial === "BRL" ? "USD" : "BRL";
+        }
+
+        function atualizarSelectDestino() {
+            const origem = document.getElementById("moedaOrigem").value;
+            const selectDestino = document.getElementById("moedaDestino");
+            selectDestino.innerHTML = "";
+
+            const moedas = Object.keys(cotacoesGlobais).concat("BRL");
+            moedas.forEach(moeda => {
+                if (moeda !== origem) {
+                    const optionText = `${moeda} <img src="${bandeiras[moeda]}" class="bandeira" alt="${moeda} flag">`;
+                    let option = document.createElement("option");
+                    option.value = moeda;
+                    option.innerHTML = optionText;
+                    selectDestino.add(option);
+                }
+            });
+
+            selectDestino.value = origem === "BRL" ? "USD" : "BRL";
+        }
+
+        function trocarMoedas() {
+            const selectOrigem = document.getElementById("moedaOrigem");
+            const selectDestino = document.getElementById("moedaDestino");
+            const origemAtual = selectOrigem.value;
+            const destinoAtual = selectDestino.value;
+
+            selectOrigem.value = destinoAtual;
+            atualizarSelectDestino();
+            selectDestino.value = origemAtual;
+        }
+
+        document.getElementById("converter").addEventListener("click", () => {
+            const valor = parseFloat(document.getElementById("valorEntrada").value);
+            if (isNaN(valor) || valor <= 0) {
+                document.getElementById("resultadoConversao").textContent = "Resultado: Insira um valor válido";
+                return;
+            }
+
+            const origem = document.getElementById("moedaOrigem").value;
+            const destino = document.getElementById("moedaDestino").value;
+
+            const taxaOrigem = origem === "BRL" ? 1 : cotacoesGlobais[origem].cotacao;
+            const taxaDestino = destino === "BRL" ? 1 : cotacoesGlobais[destino].cotacao;
+
+            const valorEmBRL = valor * taxaOrigem;
+            const resultado = valorEmBRL / taxaDestino;
+
+            document.getElementById("resultadoConversao").textContent = `Resultado: ${resultado.toFixed(2)} ${destino}`;
+        });
+
+        buscarCotacoes();
+        setInterval(buscarCotacoes, 300000);
     </script>
 </body>
 </html>
