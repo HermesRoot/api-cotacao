@@ -62,7 +62,7 @@ def atualizar_cotacoes():
                     }
                 }
                 with open(CACHE_FILE, "w") as arquivo:
-                    json.dump(cotacoes, arquivo)
+                    json.dump(cotacoes, arquivo, indent=4, ensure_ascii=False)
                 print("Cotações atualizadas com sucesso!")
             else:
                 print(f"Erro na API: {resposta.status_code} - {resposta.text}")
