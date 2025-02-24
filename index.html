@@ -8,7 +8,7 @@
 </head>
 <body class="bg-gray-100 flex items-center justify-center min-h-screen">
     <div class="bg-white shadow-lg rounded-lg p-6 w-96 text-center">
-        <h1 class="text-xl font-bold mb-4">Cotação Atual</h1>
+        <h1 class="text-xl font-bold mb-4">Cotação Moedas</h1>
         <div id="cotacoes" class="space-y-4 text-lg"></div>
     </div>
     
@@ -21,14 +21,16 @@
                 const cotacoesDiv = document.getElementById("cotacoes");
                 cotacoesDiv.innerHTML = ""; // Limpa antes de atualizar
                 
-                const ordemMoedas = ["USD", "EUR", "BTC", "GBP", "JPY", "CNY"];
+                const ordemMoedas = ["USD", "EUR", "BTC", "GBP", "JPY", "CNY", "ARS", "CAD"];
                 const nomesMoedas = {
                     "USD": "Dólar Americano (USD)",
                     "EUR": "Euro (EUR)",
                     "BTC": "Bitcoin (BTC)",
                     "GBP": "Libra Esterlina (GBP)",
                     "JPY": "Iene Japonês (JPY)",
-                    "CNY": "Yuan Chinês (CNY)"
+                    "CNY": "Yuan Chinês (CNY)",
+                    "ARS": "Peso Argentino (ARS)",
+                    "CAD": "Dólar Canadense (CAD)"
                 };
                 
                 ordemMoedas.forEach(moeda => {
