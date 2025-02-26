@@ -1,44 +1,79 @@
+# 🌎 API de Cotações  
+
+API que fornece cotações atualizadas de moedas como **USD, EUR, BTC, GBP, JPY, CNY, ARS e CAD** em relação ao BRL.  
+Os dados são obtidos da [AwesomeAPI](https://docs.awesomeapi.com.br/) e armazenados em cache para reduzir requisições desnecessárias.  
 
 ---
 
-# API de Cotações  
-
-Esta é uma API que fornece cotações atualizadas de moedas como USD, EUR e BTC em relação ao BRL. Os dados são obtidos da [AwesomeAPI](https://docs.awesomeapi.com.br/) e armazenados em cache para reduzir requisições desnecessárias.  
-
-## 🔧 Tecnologias  
-- Python  
-- Flask  
-- Flask-CORS  
-- Requests  
-
-## 🚀 Como usar  
-
-### 🔹 Endpoints  
-
-#### `GET /cotacao`  
-Retorna as cotações das moedas armazenadas.  
-
-### 🔹 Executando localmente  
-
-1. Clone este repositório:  
-   ```sh
-   git clone https://github.com/HermesRoot/api-cotacao.git
-   cd seu-repo
-   ```
-
-2. Instale as dependências:  
-   ```sh
-   pip install flask flask-cors requests
-   ```
-
-3. Inicie a API:  
-   ```sh
-   python api.py
-   ```
-
-## 📌 Observação  
-Esta API atualiza as cotações a cada 5 minutos automaticamente.  
+## 🛠️ Tecnologias  
+- 🐍 **Python** → Linguagem principal  
+- 🔥 **Flask** → Framework para a API  
+- 🌍 **Flask-CORS** → Permite acesso de diferentes origens  
+- 🌐 **Requests** → Realiza requisições à API de cotações  
 
 ---
 
-Se precisar de ajustes, me avise! 😊
+## 🚀 Como Usar  
+
+### 📡 **Endpoints**  
+
+#### 🔹 `GET /cotacao`  
+Retorna as cotações das moedas armazenadas no cache.  
+
+**Exemplo de resposta:**  
+```json
+{
+    "USD": {
+        "cotacao": 4.97,
+        "variacao": 0.25,
+        "data": "2025-02-26 12:30:00"
+    },
+    "EUR": {
+        "cotacao": 5.42,
+        "variacao": -0.10,
+        "data": "2025-02-26 12:30:00"
+    }
+}
+🔧 Como Executar Localmente
+1️⃣ Clone este repositório:
+
+sh
+Copiar
+Editar
+git clone https://github.com/HermesRoot/api-cotacao.git
+cd api-cotacao
+2️⃣ Instale as dependências:
+
+sh
+Copiar
+Editar
+pip install flask flask-cors requests
+3️⃣ Inicie a API:
+
+sh
+Copiar
+Editar
+python cotacao_api.py
+A API estará disponível em http://127.0.0.1:5000/cotacao.
+
+🌍 Hospedagem em Produção
+Para rodar a API em produção, recomenda-se usar Gunicorn:
+
+sh
+Copiar
+Editar
+pip install gunicorn
+gunicorn -w 4 -b 0.0.0.0:5000 cotacao_api:app
+Se for hospedar no Railway, Render ou Heroku, basta criar um Procfile:
+
+txt
+Copiar
+Editar
+web: gunicorn -w 4 -b 0.0.0.0:$PORT cotacao_api:app
+⏳ Atualização Automática
+A API busca novas cotações a cada 5 minutos automaticamente e armazena em um arquivo JSON local.
+
+📜 Licença
+Este projeto é de código aberto sob a licença MIT.
+
+😃 Contribuições são bem-vindas! Se quiser melhorar algo, abra um PR ou entre em contato.
