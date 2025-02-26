@@ -1,13 +1,15 @@
-Instruções
+# Instruções de Uso
 
-1. Navegue até a pasta raiz do arquivo:
-   Abra o terminal ou prompt de comando e execute:
-   cd C:\Users\Hermeson Lima\Desktop
+1. Navegue até a pasta do projeto:
+   - Abra o terminal (ou prompt de comando) e execute:
+     cd /caminho/para/o/projeto
+   - Substitua "/caminho/para/o/projeto" pelo diretório onde o repositório foi clonado.
 
 2. Execute o arquivo Python:
-   Após navegar até a pasta, execute:
-   python cotacao_api.py
+   - Digite o seguinte comando e pressione Enter:
+     python cotacao_api.py
+   - Certifique-se de que as dependências estão instaladas antes de rodar o script.
 
 3. Verifique se a API está online:
-   Acesse no navegador:
-   http://127.0.0.1:5000/cotacao
+   - Abra seu navegador e acesse:
+     http://127.0.0.1:5000/cotacao
