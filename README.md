@@ -81,7 +81,10 @@ A API busca novas cotações a cada **5 minutos** automaticamente e armazena em 
 
 ---
 
-## 📜 Licença  
-Este projeto é de código aberto sob a licença MIT.  
+## 📝 Licença
 
----
+Este projeto está licenciado sob a licença **MIT** — veja o arquivo [LICENSE](LICENSE) para detalhes.
+
+## 👤 Autor
+
+Desenvolvido por **HermesRoot**.  
